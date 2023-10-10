@@ -1,5 +1,7 @@
 package oit.is.z1976.kaizi.janken.controller;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class JankenController {
 
-  @PostMapping("/janken")
-  public String jankenmain(@RequestParam String name, ModelMap model) {
-    String setname = name;
+  @GetMapping("/janken")
+  public String jankenmain(ModelMap model, Principal prin) {
+    String loginUser = prin.getName();
+    String setname = loginUser;
     int index = 1;
     model.addAttribute("setname", setname);
     model.addAttribute("index", index);
