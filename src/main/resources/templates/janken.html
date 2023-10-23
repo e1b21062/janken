@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security">
 
 <head>
   <tile></tile>
@@ -9,32 +9,29 @@
 <body>
   <a href="/logout">ログアウト</a>
   <h1>Janken GAME!</h1>
-  エントリー
-  <ul>
-    <li th:each="user : ${room.users}">[[${user}]]</li>
-  </ul>
-  <div th:if="${index}">
-    <p>Hi [[${setname}]]</p>
-  </div>
-  <a href="/gu">ぐー</a>
-  <a href="/choki">ちょき</a>
-  <a href="/pa">ぱー</a>
 
-  <p>
-  <div th:if="${ihand}">
-    あなたの手 [[${ihand}]]
+  <div>
+    <p>Hi <span sec:authentication="name"></span></p>
   </div>
-  </p>
-  <p>
-  <div th:if="${cphand}">
-    相手の手 [[${cphand}]]
+
+  <h1>エントリー</h1>
+
+  <ul>
+    <li th:each="user7 : ${users7}"><a th href="@{/match(id=${user.id})}">[[${user7.name}]]</li>
+  </ul>
+
+  <h1>試合結果</h1>
+
+  <div th:each="match,stat:${match}">
+    <tr>
+      <td>id:[[${stat.index}]]</td>
+      <td>user1:[[${match.user1}]]</td>
+      <td>user2:[[${match.user2}]]</td>
+      <td>user1の手:[[${match.user1Hand}]]</td>
+      <td>user2の手:[[${match.uesr2Hand}]]</td>
+    </tr>
   </div>
-  </p>
-  <p>
-  <div th:if="${result}">
-    結果 [[${result}]]
-  </div>
-  </p>
+
 </body>
 
 </html>
