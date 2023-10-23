@@ -1,68 +1,72 @@
 package oit.is.z1976.kaizi.janken.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import oit.is.z1976.kaizi.janken.model.Entry;
+import oit.is.z1976.kaizi.janken.model.User;
+import oit.is.z1976.kaizi.janken.model.UserMapper;
+import oit.is.z1976.kaizi.janken.model.Match;
+import oit.is.z1976.kaizi.janken.model.MatchMapper;
 
 @Controller
 public class JankenController {
 
   @Autowired
   private Entry room;
+  private UserMapper UserMapper;
+  private MatchMapper MatchMapper;
 
   @GetMapping("/janken")
+  @Transactional
   public String jankenmain(ModelMap model, Principal prin) {
-    String loginUser = prin.getName();
-    String setname = loginUser;
-    this.room.addUser(loginUser);
+    this.room.addUser(prin.getName());
     model.addAttribute("room", this.room);
-    int index = 1;
-    model.addAttribute("setname", setname);
-    model.addAttribute("index", index);
+    // ArrayList<User> users7 = UserMapper.selectAllUser();
+    // model.addAttribute("users7", users7);
+    ArrayList<Match> match = MatchMapper.selectAllMatch();
+    model.addAttribute("match", match);
     return "janken.html";
   }
 
-  @GetMapping("gu")
-  public String jankengu(ModelMap model) {
+  @GetMapping("/match")
+  @Transactional
+  public String sample45(@RequestParam Integer param1, ModelMap model, Principal prin) {
+    model.addAttribute("user1", prin.getName());
+    User user2 = UserMapper.selectById(param1);
+    model.addAttribute("user2", user2);
+    return "match.html";
+  }
 
-    String ihand = "Gu";
+  @GetMapping("/fight")
+  public String fight(@RequestParam Integer id, @RequestParam String hand, ModelMap model, Principal prin) {
     String cphand = "Gu";
-    String result = "Draw";
-    model.addAttribute("ihand", ihand);
+    String result = "Init";
+    if (hand == "Gu") {
+      result = "Draw";
+    } else if (hand == "Choki") {
+      result = "You Lose";
+    } else if (hand == "Pa") {
+      result = "You Win!";
+    }
+
+    model.addAttribute("ihand", hand);
     model.addAttribute("cphand", cphand);
     model.addAttribute("result", result);
-    return "janken.html";
+    Match match3 = new Match();
+    match3.setUser1(UserMapper.selectByNameToUser2(prin.getName()));
+    match3.setUser2(1);
+    match3.setUser1Hand(hand);
+    match3.setUser2Hand(cphand);
+    MatchMapper.insertMatch(match3);
+    model.addAttribute("match3", match3);
+    return "match.html";
   }
-
-  @GetMapping("choki")
-  public String jankenchoki(ModelMap model) {
-
-    String ihand = "Choki";
-    String cphand = "Gu";
-    String result = "You Lose";
-    model.addAttribute("ihand", ihand);
-    model.addAttribute("cphand", cphand);
-    model.addAttribute("result", result);
-    return "janken.html";
-  }
-
-  @GetMapping("pa")
-  public String jankenPa(ModelMap model) {
-
-    String ihand = "Pa";
-    String cphand = "Gu";
-    String result = "You Win!";
-    model.addAttribute("ihand", ihand);
-    model.addAttribute("cphand", cphand);
-    model.addAttribute("result", result);
-    return "janken.html";
-  }
-
 }
