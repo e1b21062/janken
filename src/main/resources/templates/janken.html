@@ -17,18 +17,18 @@
   <h1>エントリー</h1>
 
   <ul>
-    <li th:each="user7 : ${users7}"><a th href="@{/match(id=${user.id})}">[[${user7.name}]]</li>
+    <li th:each="user:${users}"><a th:href="@{/match(id=${user.id})}">[[${user.name}]]</a></li>
   </ul>
 
   <h1>試合結果</h1>
 
-  <div th:each="match,stat:${match}">
+  <div th:each="match:${match}">
     <tr>
-      <td>id:[[${stat.index}]]</td>
+      <td>id:[[${match.id}]]</td>
       <td>user1:[[${match.user1}]]</td>
       <td>user2:[[${match.user2}]]</td>
       <td>user1の手:[[${match.user1Hand}]]</td>
-      <td>user2の手:[[${match.uesr2Hand}]]</td>
+      <td>user2の手:[[${match.user2Hand}]]</td>
     </tr>
   </div>
 

@@ -1,6 +1,6 @@
 /* userやgroupといった名前はSQLでは予約語で使えないため，userNameとしていることに注意 */
 CREATE TABLE users (
-    id IDENTITY NOT NULL PRIMARY KEY,
+    id IDENTITY NOT NULL,
     name VARCHAR NOT NULL
 );
 CREATE TABLE matches (

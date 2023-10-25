@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import oit.is.z1976.kaizi.janken.model.Entry;
@@ -20,27 +21,28 @@ import oit.is.z1976.kaizi.janken.model.MatchMapper;
 public class JankenController {
 
   @Autowired
+  UserMapper UserMapper;
+  @Autowired
   private Entry room;
-  private UserMapper UserMapper;
-  private MatchMapper MatchMapper;
+  @Autowired
+  MatchMapper MatchMapper;
 
   @GetMapping("/janken")
-  @Transactional
   public String jankenmain(ModelMap model, Principal prin) {
     this.room.addUser(prin.getName());
     model.addAttribute("room", this.room);
-    // ArrayList<User> users7 = UserMapper.selectAllUser();
-    // model.addAttribute("users7", users7);
+    ArrayList<User> users = UserMapper.selectAllUser();
+    model.addAttribute("users", users);
     ArrayList<Match> match = MatchMapper.selectAllMatch();
     model.addAttribute("match", match);
+    System.out.println(match);
     return "janken.html";
   }
 
   @GetMapping("/match")
-  @Transactional
-  public String sample45(@RequestParam Integer param1, ModelMap model, Principal prin) {
+  public String sample45(@RequestParam Integer id, ModelMap model, Principal prin) {
     model.addAttribute("user1", prin.getName());
-    User user2 = UserMapper.selectById(param1);
+    User user2 = UserMapper.selectById(id);
     model.addAttribute("user2", user2);
     return "match.html";
   }
@@ -49,13 +51,15 @@ public class JankenController {
   public String fight(@RequestParam Integer id, @RequestParam String hand, ModelMap model, Principal prin) {
     String cphand = "Gu";
     String result = "Init";
-    if (hand == "Gu") {
+    if (hand.equals("Gu")) {
       result = "Draw";
-    } else if (hand == "Choki") {
+    } else if (hand.equals("Choki")) {
       result = "You Lose";
-    } else if (hand == "Pa") {
+    } else if (hand.equals("Pa")) {
       result = "You Win!";
     }
+
+    model.addAttribute("user1", prin.getName());
 
     model.addAttribute("ihand", hand);
     model.addAttribute("cphand", cphand);
