@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security">
+
+<head>
+  <tile></tile>
+  <meta charset="UTF-8">
+  <script>
+    window.onload = function () {
+      var sse = new EventSource('/step9');
+      sse.onmessage = function (event) {
+        console.log("sse.onmessage")
+        console.log(event.data);
+        var match_list = JSON.parse(event.data);
+        var match_table = "";
+        for (var i = 0; i < match_list.length; i++) {
+          var h1 = "<h1>結果</h1>";
+          var bgn_tr = "<tr>";
+          var end_tr = "</tr>";
+          var idx = "<td>Match: id " + match_list[i].id + "</td>";
+          var user1_id = "<td> user1: " + match_list[i].user1 + "</td>";
+          var user2_id = "<td> user2: " + match_list[i].user2 + "</td>";
+          var user1_hand = "<td> user1Hand: " + match_list[i].user1Hand + "</td>";
+          var user2_hand = "<td> user2Hand: " + match_list[i].user2Hand + "</td>";
+          var bar = "<br>";
+          var ret = "<a href ='janken'>もどる</a>";
+          match_table = match_table + h1 + bgn_tr + idx + user1_id + user2_id + user1_hand + user2_hand + end_tr + bar + ret;
+        }
+        console.log(match_table);
+        var div = document.getElementById("match_table");
+        div.innerHTML = match_table;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>相手の手を持っています</h1>
+
+  <div>
+    <p>Hi <span sec:authentication="name"></span></p>
+  </div>
+
+  <div id="match_table"></div>
+
+</body>
